@@ -71,10 +71,10 @@ class MyDataset(data.Dataset):
 
 ## Results
 
-### 1. Performance on Pascal VOC2012 Aug (21 classes, 513 x 513)
+### 1. Performance on Pascal VOC2012 Aug (21 classes, 512 x 512)
 
-Training: 513x513 random crop  
-validation: 513x513 center crop
+Training: 512x512 random crop  
+validation: 512x512 center crop
 
 |  Model          | Batch Size  | FLOPs  | train/val OS   |  mIoU        | Dropbox  | Tencent Weiyun  | 
 | :--------        | :-------------: | :----:   | :-----------: | :--------: | :--------: | :----:   |
@@ -206,7 +206,7 @@ Run main.py with *"--year 2012_aug"* to train your model on Pascal VOC2012 Aug. 
 **Note: There is no SyncBN in this repo, so training with *multple GPUs and small batch size* may degrades the performance. See [PyTorch-Encoding](https://hangzhang.org/PyTorch-Encoding/tutorials/syncbn.html) for more details about SyncBN**
 
 ```bash
-python main.py --model deeplabv3plus_mobilenet --enable_vis --vis_port 28333 --gpu_id 0 --year 2012_aug --crop_val --lr 0.01 --crop_size 513 --batch_size 16 --output_stride 16
+python main.py --model deeplabv3plus_mobilenet --enable_vis --vis_port 28333 --gpu_id 0 --year 2012_aug --crop_val --lr 0.01 --crop_size 512 --batch_size 16 --output_stride 16
 ```
 
 #### 3.3 Continue training
@@ -222,7 +222,7 @@ python main.py ... --ckpt YOUR_CKPT --continue_training
 Results will be saved at ./results.
 
 ```bash
-python main.py --model deeplabv3plus_mobilenet --enable_vis --vis_port 28333 --gpu_id 0 --year 2012_aug --crop_val --lr 0.01 --crop_size 513 --batch_size 16 --output_stride 16 --ckpt checkpoints/best_deeplabv3plus_mobilenet_voc_os16.pth --test_only --save_val_results
+python main.py --model deeplabv3plus_mobilenet --enable_vis --vis_port 28333 --gpu_id 0 --year 2012_aug --crop_val --lr 0.01 --crop_size 512 --batch_size 16 --output_stride 16 --ckpt checkpoints/best_deeplabv3plus_mobilenet_voc_os16.pth --test_only --save_val_results
 ```
 
 ## Cityscapes

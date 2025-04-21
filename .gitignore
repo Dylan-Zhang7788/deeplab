@@ -6,6 +6,9 @@ checkpoints
 .idea/
 __pycache__
 results
+*.onnx
+*.trt
+torch2trt-master
 checkpoints_bak
 cityscapes
 test_results

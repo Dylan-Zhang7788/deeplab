@@ -293,9 +293,10 @@ class HRNet(nn.Module):
 def _hrnet(arch, channels, num_blocks, pretrained, progress, **kwargs):
     model = HRNet(channels, num_blocks, **kwargs)
     if pretrained:
-        CKPT_PATH = check_pth(arch)
-        checkpoint = torch.load(CKPT_PATH)
-        model.load_state_dict(checkpoint['state_dict'])
+        pass
+        # CKPT_PATH = check_pth(arch)
+        # checkpoint = torch.load(CKPT_PATH)
+        # model.load_state_dict(checkpoint['state_dict'])
     return model
 
 
