@@ -135,7 +135,10 @@ def main():
 
             alpha = 0.4  # 透明度，0为完全透明，1为完全不透明
             img = cv2.imread(img_path)
-            overlay = cv2.addWeighted(img, 1 - alpha, colorized_preds, alpha, 0)
+            colored_mask = np.zeros((img.shape[0], img.shape[1], 3), dtype=np.uint8)
+            colored_mask[pred == 1] = [255, 0, 0]  # 白色前景
+
+            overlay = cv2.addWeighted(img, 1 - alpha, colored_mask, alpha, 0)
             if opts.save_val_results_to:
                 cv2.imwrite(os.path.join(opts.save_val_results_to, img_name+'.png'), cv2.cvtColor(overlay, cv2.COLOR_RGB2BGR)) 
                 # colorized_preds.save(os.path.join(opts.save_val_results_to, img_name+'.png'))

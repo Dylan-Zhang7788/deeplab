@@ -5,11 +5,12 @@ import tensorrt as trt
 import pycuda.driver as cuda
 import pycuda.autoinit
 from PIL import Image
-# /usr/src/tensorrt/bin/trtexec --onnx=end2end.onnx --fp16 --saveEngine=rdrnet-l.engine
+# /usr/src/tensorrt/bin/trtexec --onnx=end2end_512.onnx --fp16 --saveEngine=rdrnet_0529.engine
+# --minShapes=input:1x3x768x1024 --optShapes=input:1x3x768x1024 --maxShapes=input:1x3x768x1024
 # 用这一行命令把onnx转成trt
 
 # 常量定义
-MODEL_PATH = "rdrnet-l.trt"
+MODEL_PATH = "seg_model_resnet.trt"
 TEST_IMG_DIR = "test_img"
 OUTPUT_DIR = "test_results"
 INPUT_H = 768 # 根据你的模型输入尺寸调整
@@ -67,6 +68,7 @@ def process_images():
             
         # 读取图像
         img = Image.open(img_path).convert('RGB')
+        # img = img.resize((512, 512))
         img = np.array(img).astype(np.float32) / 255.0  # shape: (H, W, 3)
 
         if img is None:
@@ -89,6 +91,7 @@ def process_images():
         # 6. 将 mask 映射成彩色（0=黑，1=白）
         colored_mask = np.zeros((orig_h, orig_w, 3), dtype=np.uint8)
         colored_mask[pred_mask == 1] = [255, 255, 255]  # 白色前景
+        # colored_mask = np.resize(colored_mask, (768, 1024, 3)) 
 
         # 7. 半透明叠加（透明度 alpha 可调）
         alpha = 0.5

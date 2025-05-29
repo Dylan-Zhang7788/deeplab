@@ -1,0 +1,9 @@
+deeplab实现草地分割的最终版本，已与github同步，可直接使用
+
+checkpoints文件夹里存了不同时期的权重，其中0407版的resnet50是效果最好的
+
+相关的流程写在launch.jason里，包括使用模型直接预测（predict），使用onnx模型预测（predict_onnx），将模型转为onnx（onnx），以及训练（train_deeplab）
+
+如果要将模型转为tensorRT，需要在NX板子上运行
+/usr/src/tensorrt/bin/trtexec --onnx=end2end_512.onnx --fp16 --saveEngine=resnet_0529.trt
+这行命令。模型的输入输出尺寸与onnx的保持一致，而onnx模型的尺寸取决于在进行模型转换（torch_to_onnx.py）时的输出输出尺寸。

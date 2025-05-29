@@ -1,5 +1,7 @@
 import torch
+import torch.nn as nn
 import numpy as np
+import onnx
 import os
 import onnxruntime as ort
 import argparse
@@ -7,8 +9,6 @@ import network
 from datasets import Cityscapes
 from torchvision import transforms as T
 from PIL import Image
-
-OUTPUT_NAME = "seg_model_hrnet32.onnx"
 
 
 def get_argparser():
@@ -64,7 +64,7 @@ if opts.separable_conv and 'plus' in opts.model:
     network.convert_to_separable_conv(model.classifier)
 if opts.ckpt is not None and os.path.isfile(opts.ckpt):
     # https://github.com/VainF/DeepLabV3Plus-Pytorch/issues/8#issuecomment-605601402, @PytaichukBohdan
-    checkpoint = torch.load(opts.ckpt, map_location=torch.device('cuda'),weights_only=False)
+    checkpoint = torch.load(opts.ckpt, map_location=torch.device('cpu'),weights_only=False)
     model.load_state_dict(checkpoint["model_state"])
     model.to(device)
     print("Resume model from %s" % opts.ckpt)
@@ -77,9 +77,9 @@ transform = T.Compose([
         T.Normalize(mean=[0.485, 0.456, 0.406],
                         std=[0.229, 0.224, 0.225]),
     ])
-img = Image.open("test_img/2.png").convert('RGB')
+img = Image.open("test_img/2.jpg").convert('RGB')
 img = transform(img).unsqueeze(0) # To tensor of NCHW
-img = img.to('cuda')
+img = img.to('cpu')
 # dummy_input = torch.randn(1, 3, 768, 1024, requires_grad=False).float() 
 dummy_input = img
 
@@ -87,7 +87,7 @@ dummy_input = img
 torch.onnx.export(
     model,
     dummy_input,
-    OUTPUT_NAME,
+    "seg_model.onnx",
     export_params=True,
     opset_version=11,
     do_constant_folding=True,
@@ -98,16 +98,16 @@ torch.onnx.export(
 print("✅ ONNX模型导出成功")
 
 # 4. 加载 ONNX 模型并推理
-ort_session = ort.InferenceSession(OUTPUT_NAME)
+ort_session = ort.InferenceSession("seg_model.onnx")
 
 # 注意要转成 numpy 并保持 dtype 为 float32
-onnx_input = dummy_input.to('cpu').numpy()
+onnx_input = dummy_input.numpy()
 ort_outs = ort_session.run(None, {"input": onnx_input})
 onnx_output = ort_outs[0]
 
 # 5. 用 PyTorch 推理原始模型
 with torch.no_grad():
-    torch_output = model(dummy_input).to('cpu').numpy()
+    torch_output = model(dummy_input).numpy()
 
 # 6. 误差比较
 max_diff = np.max(np.abs(torch_output - onnx_output))
