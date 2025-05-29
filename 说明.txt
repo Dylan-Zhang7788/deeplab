@@ -7,3 +7,5 @@ checkpoints文件夹里存了不同时期的权重，其中0407版的resnet50是
 如果要将模型转为tensorRT，需要在NX板子上运行
 /usr/src/tensorrt/bin/trtexec --onnx=end2end_512.onnx --fp16 --saveEngine=resnet_0529.trt
 这行命令。模型的输入输出尺寸与onnx的保持一致，而onnx模型的尺寸取决于在进行模型转换（torch_to_onnx.py）时的输出输出尺寸。
+
+2025年5月29日 张棣
