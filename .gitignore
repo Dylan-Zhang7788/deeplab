@@ -5,10 +5,10 @@ checkpoints
 *.pyc
 .idea/
 __pycache__
+*.onnx
 results
 checkpoints_bak
 cityscapes
-test_results
-test_result
-test_img
+test_results*
+test_img*
 data

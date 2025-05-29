@@ -14,7 +14,7 @@ python main.py \
   --gpu_id 0 \
   --crop_val \
   --lr 0.01 \
-  --crop_size 513 \
+  --crop_size 512 \
   --batch_size 128 \
   --output_stride 16 \
   --loss_type focal_loss \
